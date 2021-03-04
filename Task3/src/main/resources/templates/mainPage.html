@@ -1,0 +1,110 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" 
+integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" 
+crossorigin="anonymous">
+<body>
+<div class="container">
+	<div align="center">
+	<font size="5">Books</font>
+	<table class="table">
+	<thead>
+		<tr>
+			<th scope="col">ID</th>
+			<th scope="col">Name</th>
+			<th scope="col">Action</th>
+		</tr>
+	</thead>
+	<tbody>
+		<th:block th:each="book : ${books}">
+		<tr>
+			<td><th:block th:text="${book.id}"></td>
+			<td><th:block th:text="${book.name}"></td>
+			<td>
+				<a th:href="@{/deleteBook?id={id} (id=${book.id})}"
+					class="btn btn-danger">Delete</a>
+			</td>
+		</tr>
+		</th:block>
+	</tbody>
+	</table>
+	
+	<form class="form-horizontal" th:action="@{/addBook}" method="post" enctype="multipart/form-data">
+	Name:
+	<input type="text" class="form-control" placeholder="Book name" name="name" required="required">
+	<button type="submit" class="btn btn-primary">Add</button>
+	</form>
+	<br><br>
+	<font size="5">Languages</font>
+	<table class="table">
+	<thead>
+		<tr>
+			<th scope="col">ID</th>
+			<th scope="col">Abbreviation</th>
+			<th scope="col">Action</th>
+		</tr>
+	</thead>
+	<tbody>
+		<th:block th:each="language : ${languages}">
+		<tr>
+			<td><th:block th:text="${language.id}"></td>
+			<td><th:block th:text="${language.abbreviation}"></td>
+			<td>
+				<a th:href="@{/deleteLanguage?id={id} (id=${language.id})}"
+					class="btn btn-danger">Delete</a>
+				<a th:href="@{/lang/{abb} (abb=${language.abbreviation})}"
+					class="btn btn-primary">Show books</a>	
+			</td>
+		</tr>
+		</th:block>
+	</tbody>
+	</table>
+	
+	<form class="form-horizontal" th:action="@{/addLanguage}" method="post" enctype="multipart/form-data">
+	Abbreviation:
+	<input type="text" class="form-control" placeholder="Abbreviation" name="abbreviation" required="required">
+	<button type="submit" class="btn btn-primary">Add</button>
+	</form>
+	<br><br>
+	<font size="5">Localization</font>
+	<table class="table">
+	<thead>
+		<tr>
+			<th scope="col">ID</th>
+			<th scope="col">Book</th>
+			<th scope="col">Language</th>
+			<th scope="col">Value</th>
+			<th scope="col">Action</th>
+		</tr>
+	</thead>
+	<tbody>
+		<th:block th:each="localization : ${localizations}">
+		<tr>
+			<td><th:block th:text="${localization.id}"></td>
+			<td><th:block th:text="${localization.book.name}"></td>
+			<td><th:block th:text="${localization.language.abbreviation}"></td>
+			<td><th:block th:text="${localization.value}"></td>
+			<td>
+				<a th:href="@{/deleteLocalization?id={id} (id=${localization.id})}"
+					class="btn btn-danger">Delete</a>
+			</td>
+		</tr>
+		</th:block>
+	</tbody>
+	</table>
+	<form class="form-horizontal" th:action="@{/addLocalization}" method="post" enctype="multipart/form-data">
+	Book: <br>
+	<th:block th:each="book : ${books}">
+		<input type="radio" name="bookId" th:value="${book.id}"><th:block th:text="${book.name}"/><br/>
+	</th:block>
+	Language: <br>
+	<th:block th:each="language : ${languages}">
+		<input type="radio" name="languageId" th:value="${language.id}"><th:block th:text="${language.abbreviation}"/><br/>
+	</th:block>
+	Value:
+	<input type="text" class="form-control" placeholder="Value" name="value" required="required">
+	<button type="submit" class="btn btn-primary">Add</button>
+	</form>
+	</div>
+	</div>
+</body>
+</html>
