@@ -2,6 +2,7 @@ package by.nosevich.internship.task3.service.jpa;
 
 import java.util.List;
 
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,7 +11,7 @@ import by.nosevich.internship.task3.repository.LanguageRepository;
 import by.nosevich.internship.task3.service.LanguageService;
 
 @Service
-public class JPALanguageService implements LanguageService{
+public class JPALanguageService implements LanguageService, InitializingBean {
 
 	@Autowired
 	private LanguageRepository repo;
@@ -40,4 +41,12 @@ public class JPALanguageService implements LanguageService{
 		return repo.findByAbbreviation(abbreviation);
 	}
 
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		if (getAll().size()==0){
+			save(new Language(null, "PL", null));
+			save(new Language(null, "RU", null));
+			save(new Language(null, "BY", null));
+		}
+	}
 }

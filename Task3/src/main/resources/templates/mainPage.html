@@ -17,8 +17,8 @@ crossorigin="anonymous">
 	<tbody>
 		<th:block th:each="book : ${books}">
 		<tr>
-			<td><th:block th:text="${book.id}"></td>
-			<td><th:block th:text="${book.name}"></td>
+			<td><th:block th:text="${book.id}"/></td>
+			<td><th:block th:text="${book.name}"/></td>
 			<td>
 				<a th:href="@{/deleteBook?id={id} (id=${book.id})}"
 					class="btn btn-danger">Delete</a>
@@ -46,8 +46,8 @@ crossorigin="anonymous">
 	<tbody>
 		<th:block th:each="language : ${languages}">
 		<tr>
-			<td><th:block th:text="${language.id}"></td>
-			<td><th:block th:text="${language.abbreviation}"></td>
+			<td><th:block th:text="${language.id}"/></td>
+			<td><th:block th:text="${language.abbreviation}"/></td>
 			<td>
 				<a th:href="@{/deleteLanguage?id={id} (id=${language.id})}"
 					class="btn btn-danger">Delete</a>
@@ -58,6 +58,8 @@ crossorigin="anonymous">
 		</th:block>
 	</tbody>
 	</table>
+		<font color="red">Attention! Before deleting a language,
+			you must remove all its localizations</font>
 	
 	<form class="form-horizontal" th:action="@{/addLanguage}" method="post" enctype="multipart/form-data">
 	Abbreviation:
@@ -79,10 +81,10 @@ crossorigin="anonymous">
 	<tbody>
 		<th:block th:each="localization : ${localizations}">
 		<tr>
-			<td><th:block th:text="${localization.id}"></td>
-			<td><th:block th:text="${localization.book.name}"></td>
-			<td><th:block th:text="${localization.language.abbreviation}"></td>
-			<td><th:block th:text="${localization.value}"></td>
+			<td><th:block th:text="${localization.id}"/></td>
+			<td><th:block th:text="${localization.book.name}"/></td>
+			<td><th:block th:text="${localization.language.abbreviation}"/></td>
+			<td><th:block th:text="${localization.value}"/></td>
 			<td>
 				<a th:href="@{/deleteLocalization?id={id} (id=${localization.id})}"
 					class="btn btn-danger">Delete</a>

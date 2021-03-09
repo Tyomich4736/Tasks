@@ -29,8 +29,7 @@ public class MainController {
 	private LanguageService languageService;
 	@Autowired
 	private LocalizationService localizationService;
-	
-	
+
 	@GetMapping("")
 	public String getMainPage(Model model) {
 		model.addAttribute("books", bookService.getAll());
