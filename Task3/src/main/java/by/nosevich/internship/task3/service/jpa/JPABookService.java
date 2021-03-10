@@ -2,6 +2,7 @@ package by.nosevich.internship.task3.service.jpa;
 
 import java.util.List;
 
+import by.nosevich.internship.task3.dto.Language;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,4 +36,8 @@ public class JPABookService implements BookService{
 		return repo.getOne(id);
 	}
 
+	@Override
+	public List<Book> getLocalizedBooks(Language language) {
+		return repo.findLocalizedBooks(language.getId());
+	}
 }

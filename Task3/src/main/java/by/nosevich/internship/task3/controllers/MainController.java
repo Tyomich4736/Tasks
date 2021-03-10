@@ -43,8 +43,7 @@ public class MainController {
 			@PathVariable("lang") String langAbbreviation) {
 		Language language = languageService.getByAbbreviation(langAbbreviation);
 		if (language!=null) {
-			List<Book> books = bookService.getAll();
-			model.addAttribute("books", changedBooksForLocal(language, books));
+			model.addAttribute("books", bookService.getLocalizedBooks(language));
 			model.addAttribute("languages", languageService.getAll());
 			model.addAttribute("localizations", localizationService.getAll());
 			return "mainPage";
