@@ -6,4 +6,7 @@ import by.nosevich.internship.task3.dto.Localization;
 
 public interface LocalizationService extends DAO<Localization>{
 	Localization getByBookAndLanguage(Book book, Language language);
+
+	void deleteAllByBook(Book book);
+	void deleteAllByLanguage(Language language);
 }

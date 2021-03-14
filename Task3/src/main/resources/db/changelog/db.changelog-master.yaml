@@ -46,12 +46,40 @@ databaseChangeLog:
               - column:
                   name: book_id
                   type: BIGINT
-                  constraints:
-                    foreignKeyName: fk_book_local
-                    references: books(id)
               - column:
                   name: language_id
                   type: BIGINT
+        -  addForeignKeyConstraint:
+             referencedTableName:  books
+             referencedColumnNames:  id
+             baseTableName:  localizations
+             baseColumnNames:  book_id
+             constraintName:  fk_book_local
+             onDelete:  CASCADE
+        - addForeignKeyConstraint:
+            referencedTableName: languages
+            referencedColumnNames: id
+            baseTableName: localizations
+            baseColumnNames: language_id
+            constraintName: fk_language_local
+            onDelete: CASCADE
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
                   constraints:
-                    foreignKeyName: fk_language_local
-                    references: languages(id)
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: username
+                  type: varchar(50)
+              - column:
+                  name: password
+                  type: varchar
+              - column:
+                  name: role
+                  type: varchar(50)
+
