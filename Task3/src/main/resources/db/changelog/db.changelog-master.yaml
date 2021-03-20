@@ -50,12 +50,12 @@ databaseChangeLog:
                   name: language_id
                   type: BIGINT
         -  addForeignKeyConstraint:
-             referencedTableName:  books
-             referencedColumnNames:  id
-             baseTableName:  localizations
-             baseColumnNames:  book_id
-             constraintName:  fk_book_local
-             onDelete:  CASCADE
+            referencedTableName:  books
+            referencedColumnNames:  id
+            baseTableName:  localizations
+            baseColumnNames:  book_id
+            constraintName:  fk_book_local
+            onDelete:  CASCADE
         - addForeignKeyConstraint:
             referencedTableName: languages
             referencedColumnNames: id
@@ -82,4 +82,3 @@ databaseChangeLog:
               - column:
                   name: role
                   type: varchar(50)
-

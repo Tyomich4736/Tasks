@@ -8,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,7 +23,8 @@ public class Language {
 	private Integer id;
 	
 	private String abbreviation;
-	
+
+	@JsonIgnore
 	@OneToMany(mappedBy = "language")
 	private List<Localization> localizations;
 

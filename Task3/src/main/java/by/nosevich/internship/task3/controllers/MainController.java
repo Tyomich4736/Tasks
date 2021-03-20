@@ -1,13 +1,20 @@
 package by.nosevich.internship.task3.controllers;
 
+import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,8 +26,9 @@ import by.nosevich.internship.task3.dto.Localization;
 import by.nosevich.internship.task3.service.BookService;
 import by.nosevich.internship.task3.service.LanguageService;
 import by.nosevich.internship.task3.service.LocalizationService;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 public class MainController {
 	
 	@Autowired
@@ -30,26 +38,26 @@ public class MainController {
 	@Autowired
 	private LocalizationService localizationService;
 
-	@GetMapping("")
-	public String getMainPage(Model model) {
-		model.addAttribute("books", bookService.getAll());
-		model.addAttribute("languages", languageService.getAll());
-		model.addAttribute("localizations", localizationService.getAll());
-		return "mainPage";
+	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Map<String, List>> getMainPage() {
+		Map<String, List> map = new HashMap<>();
+		map.put("books", bookService.getAll());
+		map.put("languages", languageService.getAll());
+		map.put("localizations", localizationService.getAll());
+		return new ResponseEntity<>(map, HttpStatus.OK);
 	}
 	
-	@GetMapping("/lang/{lang}")
-	public String getMainPageByLang(HttpServletRequest request, Model model,
-			@PathVariable("lang") String langAbbreviation) {
+	@GetMapping(value = "/lang/{lang}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Map<String, List>> getMainPageByLang(@PathVariable("lang") String langAbbreviation) {
 		Language language = languageService.getByAbbreviation(langAbbreviation);
-		if (language!=null) {
-			model.addAttribute("books", bookService.getLocalizedBooks(language));
-			model.addAttribute("languages", languageService.getAll());
-			model.addAttribute("localizations", localizationService.getAll());
-			return "mainPage";
-		} else {
-			return redirectBack(request);
+		if (language==null) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
+		Map<String, List> map = new HashMap<>();
+		map.put("books", bookService.getLocalizedBooks(language));
+		map.put("languages", languageService.getAll());
+		map.put("localizations", localizationService.getAll());
+		return new ResponseEntity<>(map,HttpStatus.OK);
 	}
 	
 	private List<Book> changedBooksForLocal(Language lang, List<Book> books){
@@ -65,49 +73,45 @@ public class MainController {
 		return localizedBooks;
 	}
 	
-	@GetMapping("/deleteBook")
-	public String deleteBook(HttpServletRequest request,
-			@RequestParam("id") Integer id) {
+	@DeleteMapping("/book")
+	public ResponseEntity deleteBook(@RequestParam("id") Integer id) {
 		Book book = bookService.getById(id);
 		bookService.delete(book);
-		return redirectBack(request);
+		return new ResponseEntity(HttpStatus.OK);
 	}
 	
-	@GetMapping("/deleteLanguage")
-	public String deleteLanguage(HttpServletRequest request,
-			@RequestParam("id") Integer id) {
+	@DeleteMapping("/language")
+	public ResponseEntity deleteLanguage(@RequestParam("id") Integer id) {
 		Language lang = languageService.getById(id);
 		languageService.delete(lang);
-		return "redirect:";
+		return new ResponseEntity(HttpStatus.OK);
 	}
 	
-	@GetMapping("/deleteLocalization")
-	public String deleteLocalization(HttpServletRequest request,
-			@RequestParam("id") Integer id) {
+	@DeleteMapping("/localization")
+	public ResponseEntity deleteLocalization(@RequestParam("id") Integer id) {
 		Localization local = localizationService.getById(id);
 		localizationService.delete(local);
-		return redirectBack(request);
+		return new ResponseEntity(HttpStatus.OK);
 	}
 	
-	@PostMapping("/addBook")
-	public String addBook(HttpServletRequest request, @RequestParam("name") String bookName) {
+	@PostMapping("/book")
+	public ResponseEntity addBook(@RequestParam("name") String bookName) {
 		Book book = new Book();
 		book.setName(bookName);
 		bookService.save(book);
-		return redirectBack(request);
+		return new ResponseEntity(HttpStatus.OK);
 	}
 	
-	@PostMapping("/addLanguage")
-	public String addLanguage(HttpServletRequest request, @RequestParam("abbreviation") String abbreviation) {
+	@PostMapping("/language")
+	public ResponseEntity addLanguage(@RequestParam("abbreviation") String abbreviation) {
 		Language lang = new Language();
 		lang.setAbbreviation(abbreviation);
 		languageService.save(lang);
-		return redirectBack(request);
+		return new ResponseEntity(HttpStatus.OK);
 	}
 	
-	@PostMapping("/addLocalization")
-	public String addLocalization(HttpServletRequest request,
-			@RequestParam("bookId") Integer bookId,
+	@PostMapping("/localization")
+	public ResponseEntity addLocalization(@RequestParam("bookId") Integer bookId,
 			@RequestParam("languageId") Integer languageId,
 			@RequestParam("value") String value) {
 		Localization local = new Localization();
@@ -117,12 +121,7 @@ public class MainController {
 		if (!hasSameLocalization(local)) {
 			localizationService.save(local);
 		}
-		return redirectBack(request);
-	}
-	
-	private String redirectBack(HttpServletRequest request) {
-		String referer = request.getHeader("Referer");
-	    return "redirect:"+ referer;
+		return new ResponseEntity(HttpStatus.OK);
 	}
 	
 	private boolean hasSameLocalization(Localization local) {

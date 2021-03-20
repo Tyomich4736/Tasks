@@ -44,7 +44,6 @@ public class JPABookService implements BookService{
 
 	@Override
 	public void delete(Book entity) {
-		//localizationService.deleteAllByBook(entity);
 		repo.delete(entity);
 	}
 
@@ -57,14 +56,14 @@ public class JPABookService implements BookService{
 	public List<Book> getLocalizedBooks(Language language) {
 		CriteriaBuilder builder = em.getCriteriaBuilder();
 		CriteriaQuery<Object[]> query = builder.createQuery(Object[].class);
-		Root<Book> root = query.from(Book.class);
-		Join<Book, Localization> join = root.join("localizations",JoinType.LEFT);
-		join.on(builder.and(
-				builder.equal(root.get("id"),join.get("book"))),
-				builder.equal(join.get("language").get("id"), builder.parameter(Integer.class,"langId")));
+		Root<Book> book = query.from(Book.class);
+		Join<Book, Localization> local = book.join("localizations",JoinType.LEFT);
+		local.on(builder.and(
+				builder.equal(book.get("id"),local.get("book"))),
+				builder.equal(local.get("language").get("id"), builder.parameter(Integer.class,"langId")));
 		query.multiselect(
-				root.get("id"),
-				builder.coalesce(join.get("value"),root.get("name")));
+				book.get("id"),
+				builder.coalesce(local.get("value"),book.get("name")));
 
 		List<Object[]> results = em.createQuery(query)
 				.setParameter("langId", language.getId())
