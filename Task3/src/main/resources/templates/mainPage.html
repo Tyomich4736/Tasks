@@ -16,6 +16,7 @@ crossorigin="anonymous">
 			   class="btn btn-primary" value="Logout" />
 			</form>
 		</div>
+	<br>
 	<font size="5">Books</font>
 	<table class="table">
 	<thead>
@@ -25,28 +26,14 @@ crossorigin="anonymous">
 			<th scope="col">Action</th>
 		</tr>
 	</thead>
-	<tbody>
-		<th:block th:each="book : ${books}">
-		<tr>
-			<td><th:block th:text="${book.id}"/></td>
-			<td><th:block th:text="${book.name}"/></td>
-			<td>
-				<div sec:authorize="hasAuthority('ADMIN')">
-				<a th:href="@{/deleteBook?id={id} (id=${book.id})}"
-					class="btn btn-danger">Delete</a>
-				</div>
-			</td>
-		</tr>
-		</th:block>
+	<tbody id="booksBlock">
 	</tbody>
 	</table>
 
 	<div sec:authorize="hasAuthority('ADMIN')">
-	<form class="form-horizontal" th:action="@{/addBook}" method="post" enctype="multipart/form-data">
 	Name:
-	<input type="text" class="form-control" placeholder="Book name" name="name" required="required">
-	<button type="submit" class="btn btn-primary">Add</button>
-	</form>
+	<input type="text" class="form-control" placeholder="Book name" id="bookNameInput" required="required">
+	<button class="btn btn-primary" onclick="addBook()">Add</button>
 	</div>
 
 	<br><br>
@@ -59,30 +46,16 @@ crossorigin="anonymous">
 			<th scope="col">Action</th>
 		</tr>
 	</thead>
-	<tbody>
-		<th:block th:each="language : ${languages}">
-		<tr>
-			<td><th:block th:text="${language.id}"/></td>
-			<td><th:block th:text="${language.abbreviation}"/></td>
-			<td>
-				<div sec:authorize="hasAuthority('ADMIN')">
-				<a th:href="@{/deleteLanguage?id={id} (id=${language.id})}"
-					class="btn btn-danger">Delete</a>
-				</div>
-				<a th:href="@{/lang/{abb} (abb=${language.abbreviation})}"
-					class="btn btn-primary">Show books</a>	
-			</td>
+	<tbody id="langBlock">
+		<tr >
 		</tr>
-		</th:block>
 	</tbody>
 	</table>
 
 	<div sec:authorize="hasAuthority('ADMIN')">
-	<form class="form-horizontal" th:action="@{/addLanguage}" method="post" enctype="multipart/form-data">
 	Abbreviation:
-	<input type="text" class="form-control" placeholder="Abbreviation" name="abbreviation" required="required">
-	<button type="submit" class="btn btn-primary">Add</button>
-	</form>
+	<input type="text" class="form-control" placeholder="Abbreviation" id="languageAbbInput" required="required">
+	<button class="btn btn-primary" onclick="addLang()">Add</button>
 	</div>
 
 	<br><br>
@@ -97,7 +70,7 @@ crossorigin="anonymous">
 			<th scope="col">Action</th>
 		</tr>
 	</thead>
-	<tbody>
+	<tbody id="localsBlock">
 		<th:block th:each="localization : ${localizations}">
 		<tr>
 			<td><th:block th:text="${localization.id}"/></td>
@@ -115,23 +88,21 @@ crossorigin="anonymous">
 	</tbody>
 	</table>
 	<div sec:authorize="hasAuthority('ADMIN')">
-	<form class="form-horizontal" th:action="@{/addLocalization}" method="post" enctype="multipart/form-data">
 	Book: <br>
-	<th:block th:each="book : ${books}">
-		<input type="radio" name="bookId" th:value="${book.id}"><th:block th:text="${book.name}"/><br/>
-	</th:block>
+	<div id="bookRadioList">
+	</div>
 	Language: <br>
-	<th:block th:each="language : ${languages}">
-		<input type="radio" name="languageId" th:value="${language.id}"><th:block th:text="${language.abbreviation}"/><br/>
-	</th:block>
+	<div id="langRadioList">
+		<!--<input type="radio" name="languageId" th:value="${language.id}"><th:block th:text="${language.abbreviation}"/><br/>-->
+	</div>
 	Value:
-	<input type="text" class="form-control" placeholder="Value" name="value" required="required">
-	<button type="submit" class="btn btn-primary">Add</button>
-	</form>
+	<input type="text" class="form-control" placeholder="Value" id="localizationValueInput" required="required">
+	<button class="btn btn-primary" onclick="addLocal()">Add</button>
 	</div>
 	</div>
 	</div>
-<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
-<script src="/js/>script.js</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="/js/script.js"></script>
 </body>
 </html>
+
