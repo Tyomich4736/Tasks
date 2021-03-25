@@ -28,15 +28,19 @@ function updateLanguageList(){
 	langBlock.empty();
 	$.get(domen+"/languages", function(response){
         $.each(response, function(index, lang){
-        	langBlock.append($("<tr>"));
-            $("<td>").text(lang.id).appendTo(langBlock);
-            $("<td>").text(lang.abbreviation).appendTo(langBlock);
-			langBlock.append(
-			$("<td><button onclick=\"deleteLanguage("+lang.id+")\" class=\"btn btn-danger\">Delete</button>"+
-			"<button onclick=\"showBooks(\'"+lang.abbreviation+"\')\" class=\"btn btn-primary\">Show books</button></td>"));
-        	langBlock.append($("</tr>"));
+            $.get(domen+"/count/"+lang.abbreviation, function(count){
+        	    langBlock.append("<tr>");
+                $("<td>").text(lang.id).appendTo(langBlock);
+                $("<td>").text(lang.abbreviation).appendTo(langBlock);
+                langBlock.append("<td>"+count+"</td>");
+			    langBlock.append(
+			    $("<td><button onclick=\"deleteLanguage("+lang.id+")\" class=\"btn btn-danger\">Delete</button>"+
+			    "<button onclick=\"showBooks(\'"+lang.abbreviation+"\')\" class=\"btn btn-primary\">Show books</button></td>"));
+        	    langBlock.append("</tr>");
+        	});
         });
     });
+
 }
 
 function updateLocalizationList(){
@@ -95,6 +99,7 @@ function addLocal(){
 	if(bookId!=null & langId!=null & value!=""){
 		$.post(domen+"/localizations", {bookId: bookId, langId: langId, value: value}, function(){
          	updateLocalizationList();
+         	updateLanguageList();
 		}).fail(function(){
       		console.log("error");
       	});
@@ -138,6 +143,7 @@ function addLang(){
 	abbreviation = input.val();
     $.post(domen+"/languages", {abbreviation: abbreviation}, function(){
          updateLanguageList();
+         updateLocalizationForm();
 	}).fail(function(){
       	console.log("error");
 });
@@ -145,8 +151,9 @@ function addLang(){
 
 function showBooks(lang){
 	var booksBlock = $("#booksBlock");
+	var substring = $("#showLocalInput").val();
 	booksBlock.empty();
-	$.get(domen+"/books/"+lang, function(response){
+	$.get(domen+"/books/"+lang+"?substring="+substring, function(response){
         $.each(response, function(index, book){
         	booksBlock.append($("<tr>"));
             $("<td>").text(book.id).appendTo(booksBlock);

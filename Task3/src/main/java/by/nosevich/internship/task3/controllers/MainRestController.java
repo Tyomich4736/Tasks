@@ -2,9 +2,12 @@ package by.nosevich.internship.task3.controllers;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -51,18 +54,32 @@ public class MainRestController {
 	@GetMapping(value = "/localizations",produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<Localization>> getLocalizations(){
 		List<Localization> locals = localizationService.getAll();
-		return new ResponseEntity<>(locals, HttpStatus.OK);
+		List<Localization> sortedLocals = locals.stream().
+				sorted(Comparator.comparing(o -> o.getValue().toLowerCase())).
+				sorted(Comparator.comparing(o -> o.getLanguage().getAbbreviation().toLowerCase())).
+				collect(Collectors.toList());
+		return new ResponseEntity<>(sortedLocals, HttpStatus.OK);
 	}
 
 	
 	@GetMapping(value = "/books/{lang}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<Book>> getBooksForLanguage(@PathVariable("lang") String langAbbreviation) {
+	public ResponseEntity<List<Book>> getBooksForLanguage(@PathVariable("lang") String langAbbreviation,
+														  @RequestParam("substring") String substring) {
 		Language language = languageService.getByAbbreviation(langAbbreviation);
 		if (language==null) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
-		List<Book> books = bookService.getLocalizedBooks(language);
+		List<Book> books = bookService.getLocalizedBooks(language).
+				stream().filter(book -> book.getName().toLowerCase().contains(substring.toLowerCase())).
+				collect(Collectors.toList());
 		return new ResponseEntity<>(books,HttpStatus.OK);
+	}
+
+	@GetMapping("/count/{lang}")
+	public ResponseEntity<Long> getLocalizationCount(@PathVariable("lang") String lang){
+		long count = localizationService.getAll().stream().
+				filter(local -> local.getLanguage().getAbbreviation().equals(lang)).count();
+		return new ResponseEntity<>(count, HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/books")
