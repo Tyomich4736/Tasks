@@ -22,6 +22,9 @@ import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Root;
 
+/**
+ * This service is responsible for manage books in database
+ */
 @Service
 public class JPABookService implements BookService{
 
@@ -31,27 +34,48 @@ public class JPABookService implements BookService{
 	private LocalizationService localizationService;
 	@PersistenceContext
 	private EntityManager em;
-	
+
+	/**
+	 * @return all books from database
+	 */
 	@Override
 	public List<Book> getAll() {
 		return repo.findAll();
 	}
 
+	/**
+	 * This method saves book in database
+	 * @param book the book, which should be saved
+	 */
 	@Override
-	public void save(Book entity) {
-		repo.save(entity);
+	public void save(Book book) {
+		repo.save(book);
 	}
 
+	/**
+	 * This method removes book from database
+	 * @param book the book, which should be removed
+	 */
 	@Override
-	public void delete(Book entity) {
-		repo.delete(entity);
+	public void delete(Book book) {
+		repo.delete(book);
 	}
 
+	/**
+	 * This method returns book by id from database
+	 * @param id target id for search
+	 * @return book if it found or null if not
+	 */
 	@Override
 	public Book getById(int id) {
-		return repo.getOne(id);
+		return repo.findById(id).orElse(null);
 	}
 
+	/**
+	 * This method returns books with it's localized name on target language if this name exist or with original name if not
+	 * @param language the target language
+	 * @return list with localized books
+	 */
 	@Override
 	public List<Book> getLocalizedBooks(Language language) {
 		CriteriaBuilder builder = em.getCriteriaBuilder();

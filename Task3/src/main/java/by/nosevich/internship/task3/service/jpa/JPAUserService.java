@@ -46,7 +46,7 @@ public class JPAUserService implements UserService, InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        if (getAll().size()==0){
+        if (getAll().isEmpty()){
             save(new User(null, "Client", passwordEncoder.encode("client"), UserRole.CLIENT));
             save(new User(null, "Admin", passwordEncoder.encode("admin"), UserRole.ADMIN));
         }

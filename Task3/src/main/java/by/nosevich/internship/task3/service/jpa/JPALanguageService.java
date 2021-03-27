@@ -18,36 +18,60 @@ public class JPALanguageService implements LanguageService, InitializingBean {
 	private LanguageRepository repo;
 	@Autowired
 	private LocalizationService localizationService;
-	
+
+	/**
+	 * @return all languages from database
+	 */
 	@Override
 	public List<Language> getAll() {
 		return repo.findAll();
 	}
 
+	/**
+	 * This method saves language in database
+	 * @param language the language, which should be saved
+	 */
 	@Override
-	public void save(Language entity) {
-		repo.save(entity);
+	public void save(Language language) {
+		repo.save(language);
 	}
 
+	/**
+	 * This method removes language from database
+	 * @param language the language, which should be removed
+	 */
 	@Override
-	public void delete(Language entity) {
+	public void delete(Language language) {
 		//localizationService.deleteAllByLanguage(entity);
-		repo.delete(entity);
+		repo.delete(language);
 	}
 
+	/**
+	 * This method returns language by id from database
+	 * @param id target id for search
+	 * @return language if it found or null if not
+	 */
 	@Override
 	public Language getById(int id) {
-		return repo.getOne(id);
+		return repo.findById(id).orElse(null);
 	}
 
+	/**
+	 * This method returns language by abbreviation from database
+	 * @param abbreviation target abbreviation for search
+	 * @return language if it found or null if not
+	 */
 	@Override
 	public Language getByAbbreviation(String abbreviation) {
 		return repo.findByAbbreviation(abbreviation);
 	}
 
+	/**
+	 * This method add default languages in database if it's empty
+	 */
 	@Override
-	public void afterPropertiesSet() throws Exception {
-		if (getAll().size()==0){
+	public void afterPropertiesSet(){
+		if (getAll().isEmpty()){
 			save(new Language(null, "PL", null));
 			save(new Language(null, "RU", null));
 			save(new Language(null, "BY", null));

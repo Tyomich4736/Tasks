@@ -29,6 +29,7 @@
                     <div id="register-link" class="text-right">
                         <a href="#" class="text-info">Sign in</a>
                     </div>
+                    <label th:if="${userExistError==true}" class="text-info"><font color="red">This user already exists</font></label><br>
                 </form>
             </div>
         </div>

@@ -27,12 +27,12 @@ function updateLanguageList(){
 	var langBlock = $("#langBlock");
 	langBlock.empty();
 	$.get(domen+"/languages", function(response){
-        $.each(response, function(index, lang){
-            $.get(domen+"/count/"+lang.abbreviation, function(count){
+	    $.get(domen+"/languages/count/", function(countMap){
+            $.each(response, function(index, lang){
         	    langBlock.append("<tr>");
                 $("<td>").text(lang.id).appendTo(langBlock);
                 $("<td>").text(lang.abbreviation).appendTo(langBlock);
-                langBlock.append("<td>"+count+"</td>");
+                langBlock.append("<td>"+countMap[lang.abbreviation]+"</td>");
 			    langBlock.append(
 			    $("<td><button onclick=\"deleteLanguage("+lang.id+")\" class=\"btn btn-danger\">Delete</button>"+
 			    "<button onclick=\"showBooks(\'"+lang.abbreviation+"\')\" class=\"btn btn-primary\">Show books</button></td>"));
@@ -116,37 +116,42 @@ function deleteRecord(url){
     });
 }
 function deleteBook(id){
-    deleteRecord(domen+"/books?id="+id);
+    deleteRecord(domen+"/books/"+id);
     updateBookList();
 }
 function deleteLanguage(id){
-	deleteRecord(domen+"/languages?id="+id);
+	deleteRecord(domen+"/languages/"+id);
 	updateLanguageList();
 }
 function deleteLocalization(id){
-	deleteRecord(domen+"/localizations?id="+id);
+	deleteRecord(domen+"/localizations/"+id);
 	updateLocalizationList();
 }
 
 function addBook(){
 	var input = $("#bookNameInput");
 	bookName = input.val();
-    $.post(domen+"/books", {name: bookName}, function(){
-         updateBookList();
-	}).fail(function(){
-      	console.log("error");
-});
+    $.ajax({
+        data: JSON.stringify({name: bookName}),
+        contentType: 'application/json',
+        type: 'POST',
+        url: domen+"/books",
+    }).done(function(data){
+        updateBookList();
+    });
 }
 
 function addLang(){
 	var input = $("#languageAbbInput");
 	abbreviation = input.val();
-    $.post(domen+"/languages", {abbreviation: abbreviation}, function(){
-         updateLanguageList();
-         updateLocalizationForm();
-	}).fail(function(){
-      	console.log("error");
-});
+    $.ajax({
+            data: JSON.stringify({abbreviation: abbreviation}),
+            contentType: 'application/json',
+            type: 'POST',
+            url: domen+"/languages",
+        }).done(function(data){
+            updateLanguageList();
+        });
 }
 
 function showBooks(lang){

@@ -30,10 +30,6 @@ public class Book {
 	private List<Localization> localizations;
 
 	public boolean equals(Book obj) {
-		if (this.getId().equals(obj.getId())
-				&& this.getName().equals(obj.getName())) {
-			return true;
-		}
-		return false;
+		return (this.getId().equals(obj.getId()) && this.getName().equals(obj.getName()));
 	}
 }
