@@ -28,10 +28,14 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/books")
 public class BooksController {
-    @Autowired
     private BookService bookService;
-    @Autowired
     private LanguageService languageService;
+
+    @Autowired
+    public BooksController(BookService bookService, LanguageService languageService) {
+        this.bookService = bookService;
+        this.languageService = languageService;
+    }
 
     /**
      * @return list with all books

@@ -1,4 +1,4 @@
-package by.nosevich.internship.test.controllertests;
+package by.nosevich.internship.test.controllertests.integration;
 
 import by.nosevich.internship.task3.controllers.LanguagesController;
 import by.nosevich.internship.task3.dto.Language;

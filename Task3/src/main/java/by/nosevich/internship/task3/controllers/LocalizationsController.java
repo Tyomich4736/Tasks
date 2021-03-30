@@ -30,12 +30,18 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/localizations")
 public class LocalizationsController {
-    @Autowired
     private BookService bookService;
-    @Autowired
     private LanguageService languageService;
-    @Autowired
     private LocalizationService localizationService;
+
+    @Autowired
+    public LocalizationsController(BookService bookService,
+                                   LanguageService languageService,
+                                   LocalizationService localizationService) {
+        this.bookService = bookService;
+        this.languageService = languageService;
+        this.localizationService = localizationService;
+    }
 
     /**
      * @return list with all localizations sorted by language and value
