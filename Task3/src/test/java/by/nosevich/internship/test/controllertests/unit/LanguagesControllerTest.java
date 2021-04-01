@@ -4,8 +4,9 @@ import by.nosevich.internship.task3.controllers.LanguagesController;
 import by.nosevich.internship.task3.dto.Language;
 import by.nosevich.internship.task3.dto.Localization;
 import by.nosevich.internship.task3.service.LanguageService;
-import by.nosevich.internship.task3.service.LocalizationService;
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
@@ -22,12 +23,14 @@ public class LanguagesControllerTest {
     @Mock
     private LanguageService languageService;
 
+    @InjectMocks
     private LanguagesController languagesController;
+
     private Language english;
 
-    public LanguagesControllerTest(){
+    @Before
+    public void init(){
         MockitoAnnotations.openMocks(this);
-        languagesController = new LanguagesController(languageService);
         english = new Language(1, "EN", null);
     }
 
@@ -36,8 +39,12 @@ public class LanguagesControllerTest {
         ResponseEntity re = languagesController.addLanguage(english);
         assertEquals(HttpStatus.OK, re.getStatusCode());
         verify(languageService).save(english);
+    }
 
-        re = languagesController.addLanguage(new Language(null, "   ", null));
+    @Test
+    public void addLanguageWithEmptyAbbreviationTest(){
+        ResponseEntity re = languagesController.addLanguage(
+                new Language(null, "   ", null));
         assertEquals(HttpStatus.BAD_REQUEST, re.getStatusCode());
     }
 
@@ -47,9 +54,12 @@ public class LanguagesControllerTest {
         ResponseEntity re = languagesController.deleteLanguage(english.getId());
         assertEquals(HttpStatus.OK, re.getStatusCode());
         verify(languageService).delete(english);
+    }
 
+    @Test
+    public void deleteNonExistentLanguageTest(){
         given(languageService.getById(english.getId())).willReturn(null);
-        re = languagesController.deleteLanguage(english.getId());
+        ResponseEntity re = languagesController.deleteLanguage(english.getId());
         assertEquals(HttpStatus.BAD_REQUEST, re.getStatusCode());
     }
 
@@ -64,6 +74,7 @@ public class LanguagesControllerTest {
         ResponseEntity<Map<String, Integer>> re = languagesController.getLocalizationCount();
 
         assertEquals(HttpStatus.OK, re.getStatusCode());
-        assertEquals(2, re.getBody().get(english.getAbbreviation()));
+        assertEquals(2, re.getBody().get(english.getAbbreviation()),
+                "Returned number doesn't match the number of localizations");
     }
 }
