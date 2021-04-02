@@ -17,7 +17,6 @@ import by.nosevich.internship.task3.service.LocalizationService;
 @Service
 @Transactional
 public class JPALocalizationService implements LocalizationService{
-	//private int idCount=1;
 	@Autowired
 	private LocalizationRepository repo;
 
@@ -35,7 +34,6 @@ public class JPALocalizationService implements LocalizationService{
 	 */
 	@Override
 	public void save(Localization localization) {
-		//repo.insert(idCount++, entity.getValue(), entity.getBook().getId(), entity.getLanguage().getId());
 		repo.save(localization);
 	}
 

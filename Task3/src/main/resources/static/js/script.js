@@ -6,6 +6,7 @@ $(document).ready(function(){
     updateLanguageList();
     updateLocalizationList();
     updateLocalizationForm();
+    updateParamForm();
 });
 
 function updateBookList(){
@@ -17,11 +18,28 @@ function updateBookList(){
             $("<td>").text(book.id).appendTo(booksBlock);
             $("<td>").text(book.name).appendTo(booksBlock);
 			booksBlock.append(
-				$("<td><button type=\"submit\" onclick=\"deleteBook("+book.id+")\" class=\"btn btn-danger\">Delete</button></td>"));
+				$("<td><button type=\"submit\" onclick=\"deleteBook("+book.id+")\" class=\"btn btn-danger\">Delete</button>"+
+				"<button type=\"submit\" onclick=\"updateBookParamsList("+book.id+")\" class=\"btn btn-primary\">Show parameters</button></td>"));
 			booksBlock.append($("</tr>"));
         });
     });
 }
+
+function updateBookParamsList(bookId){
+	var paramsBlock = $("#booksParamsBlock");
+	paramsBlock.empty();
+	$.get(domen+"/params/book/"+bookId, function(response){
+        $.each(response, function(index, param){
+        	paramsBlock.append($("<tr>"));
+            $("<td>").text(param.name).appendTo(paramsBlock);
+            $("<td>").text(param.value).appendTo(paramsBlock);
+			paramsBlock.append(
+				$("<td><button type=\"submit\" onclick=\"deleteParam("+param.id+")\" class=\"btn btn-danger\">Delete</button></td>"));
+			paramsBlock.append($("</tr>"));
+        });
+    });
+}
+
 
 function updateLanguageList(){
 	var langBlock = $("#langBlock");
@@ -106,6 +124,37 @@ function addLocal(){
 	}
 }
 
+function updateParamForm(){
+	var bookRadioList = $("#addParamFormBookRadioList");
+	bookRadioList.empty();
+	$.get(domen+"/books", function(response){
+		$.each(response, function(index, book){
+			bookRadioList.append(
+			$("<input type=\"radio\" name=\"bookIdParamForm\" value=\""+book.id+"\"/>"+book.name+"<br/>"));
+    	});
+    });
+}
+
+function addParam(){
+	var radios = document.getElementsByName('bookIdParamForm');
+	var bookId;
+	for (var i = 0, length = radios.length; i < length; i++) {
+  		if (radios[i].checked) {
+    		bookId=radios[i].value;
+    		break;
+  		}
+	}
+	var name = $("#paramNameInput").val();
+	var value = $("#paramValueInput").val();
+	if(bookId!=null){
+		$.post(domen+"/params", {name: name, value: value, bookId: bookId}, function(){
+         	$("#booksParamsBlock").empty();
+		}).fail(function(){
+      		console.log("error");
+      	});
+	}
+}
+
 function deleteRecord(url){
 	$.ajax({
         url: url,
@@ -118,6 +167,10 @@ function deleteRecord(url){
 function deleteBook(id){
     deleteRecord(domen+"/books/"+id);
     updateBookList();
+}
+function deleteParam(id){
+    deleteRecord(domen+"/params/"+id);
+    $("#booksParamsBlock").empty();
 }
 function deleteLanguage(id){
 	deleteRecord(domen+"/languages/"+id);
@@ -164,7 +217,8 @@ function showBooks(lang){
             $("<td>").text(book.id).appendTo(booksBlock);
             $("<td>").text(book.name).appendTo(booksBlock);
 			booksBlock.append(
-			$("<td><button type=\"submit\" onclick=\"deleteBook("+book.id+")\" class=\"btn btn-danger\">Delete</button></td>"));
+			$("<td><button type=\"submit\" onclick=\"deleteBook("+book.id+")\" class=\"btn btn-danger\">Delete</button>"+
+            	"<button type=\"submit\" onclick=\"updateBookParamsList("+book.id+")\" class=\"btn btn-primary\">Show parameters</button></td>"));
         	booksBlock.append($("</tr>"));
         });
     });

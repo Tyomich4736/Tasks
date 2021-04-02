@@ -103,7 +103,6 @@ public class JPABookService implements BookService{
 			book.setName(arr[1].toString());
 			result.add(book);
 		}
-
 		return result;
 	}
 }

@@ -29,6 +29,16 @@ public class Book {
 	@OneToMany(mappedBy = "book")
 	private List<Localization> localizations;
 
+	@JsonIgnore
+	@OneToMany(mappedBy = "book")
+	private List<BookParam> bookParams;
+
+	public Book(Integer id, String name, List<Localization> localizations) {
+		this.id = id;
+		this.name = name;
+		this.localizations = localizations;
+	}
+
 	public boolean equals(Book obj) {
 		return (this.getId().equals(obj.getId()) && this.getName().equals(obj.getName()));
 	}

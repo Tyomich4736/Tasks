@@ -16,7 +16,7 @@ crossorigin="anonymous">
 			   class="btn btn-primary" value="Logout" />
 			</form>
 		</div>
-	<br>
+	<br><br>
 	<font size="5">Books</font>
 	<table class="table">
 	<thead>
@@ -29,14 +29,37 @@ crossorigin="anonymous">
 	<tbody id="booksBlock">
 	</tbody>
 	</table>
-
 	<div sec:authorize="hasAuthority('ADMIN')">
-	Name:
-	<input type="text" class="form-control" placeholder="Book name" id="bookNameInput" required="required">
-	<button class="btn btn-primary" onclick="addBook()">Add</button>
+		Name:
+		<input type="text" class="form-control" placeholder="Book name" id="bookNameInput" required="required">
+		<button class="btn btn-primary" onclick="addBook()">Add</button>
+	</div><br><br><br>
+
+	<font size="5">Book parameters</font>
+	<table class="table">
+		<thead>
+		<tr>
+			<th scope="col">Name</th>
+			<th scope="col">Value</th>
+			<th scope="col">Action</th>
+		</tr>
+		</thead>
+		<tbody id="booksParamsBlock">
+		</tbody>
+	</table>
+		<br><br>
+	<div sec:authorize="hasAuthority('ADMIN')">
+		Book: <br>
+		<div id="addParamFormBookRadioList">
+		</div>
+		Name:
+		<input type="text" class="form-control" placeholder="Name" id="paramNameInput" required="required">
+		Value:
+		<input type="text" class="form-control" placeholder="Value" id="paramValueInput" required="required">
+		<button class="btn btn-primary" onclick="addParam()">Add</button>
 	</div>
 
-	<br><br>
+	<br><br><br><br><br><br>
 	<font size="5">Languages</font>
 		<input class="form-control mr-sm-2" type="text" placeholder="Substring"
 			   aria-label="Search" id="showLocalInput">
@@ -60,7 +83,7 @@ crossorigin="anonymous">
 	<button class="btn btn-primary" onclick="addLang()">Add</button>
 	</div>
 
-	<br><br>
+	<br><br><br><br><br><br>
 	<font size="5">Localization</font>
 	<table class="table">
 	<thead>
@@ -95,7 +118,6 @@ crossorigin="anonymous">
 	</div>
 	Language: <br>
 	<div id="langRadioList">
-		<!--<input type="radio" name="languageId" th:value="${language.id}"><th:block th:text="${language.abbreviation}"/><br/>-->
 	</div>
 	Value:
 	<input type="text" class="form-control" placeholder="Value" id="localizationValueInput" required="required">
