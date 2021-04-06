@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface BookService extends DAO<Book> {
     List<Book> getLocalizedBooks(Language language);
+    List<Book> getSortedByTargetParam(String paramName);
 }

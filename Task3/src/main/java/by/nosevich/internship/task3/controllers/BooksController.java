@@ -95,4 +95,15 @@ public class BooksController {
         }
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
+
+    /**
+     * This method returns list of all books sorted by target parameter
+     * @param paramName the target parameter name
+     * @return list of all books
+     */
+    @GetMapping("/sorted")
+    public ResponseEntity getSortedByParamName(@RequestParam("param") String paramName){
+        List<Book> list = bookService.getSortedByTargetParam(paramName);
+        return new ResponseEntity(list, HttpStatus.OK);
+    }
 }

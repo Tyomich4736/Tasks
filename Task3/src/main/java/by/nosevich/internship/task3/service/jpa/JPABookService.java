@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import by.nosevich.internship.task3.dto.Book;
+import by.nosevich.internship.task3.dto.BookParam;
 import by.nosevich.internship.task3.dto.Language;
 import by.nosevich.internship.task3.repository.BookRepository;
 import by.nosevich.internship.task3.dto.Localization;
 import by.nosevich.internship.task3.service.LocalizationService;
+import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.expression.spel.ast.Selection;
 import org.springframework.stereotype.Service;
@@ -93,6 +95,32 @@ public class JPABookService implements BookService{
 				.setParameter("langId", language.getId())
 				.getResultList();
 		return toBookList(results);
+	}
+
+	@Override
+	public List<Book> getSortedByTargetParam(String paramName) {
+		/*
+		select b
+		from books b
+		left join book_params bp
+		on b.id = bp.book_id and bp."name" = :paramName
+		order by bp.value
+		*/
+
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+		CriteriaQuery<Book> query = builder.createQuery(Book.class);
+		Root<Book> book = query.from(Book.class);
+		Join<Book, BookParam> param = book.join("bookParams", JoinType.LEFT);
+		param.on(
+				builder.equal(book, param.get("book")),
+				builder.equal(param.get("name"), builder.parameter(String.class, "paramName"))
+		);
+		query.select(book).orderBy(builder.asc(param.get("value")));
+
+		List<Book> list = em.createQuery(query)
+				.setParameter("paramName", paramName)
+				.getResultList();
+		return list;
 	}
 
 	private List<Book> toBookList(List<Object[]> list){
