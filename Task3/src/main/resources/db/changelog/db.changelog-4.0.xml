@@ -5,7 +5,9 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
-    <include file="db/changelog/db.changelog-1.0.xml"/>
-    <include file="db/changelog/db.changelog-2.0.xml"/>
-    <include file="db/changelog/db.changelog-4.0.xml"/>
+    <changeSet  author="Artyom Nosevich"  id="4">
+        <sql>
+            update DATABASECHANGELOGLOCK set LOCKED=false, LOCKGRANTED=null, LOCKEDBY=null where ID=1;
+        </sql>
+    </changeSet>
 </databaseChangeLog>

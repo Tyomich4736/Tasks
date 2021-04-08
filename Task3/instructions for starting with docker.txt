@@ -1,0 +1,12 @@
+1. From the root of the project execute 'mvn clean install -DskipTests' in terminal
+2. Write your database info in the docker-compose.yaml
+3. From the root of the project execute 'docker-compose up' in terminal
+4. Wait for docker to download the required images
+5. If you see 'Waiting for the changelog lock' in the logs do this:
+   1. Open Docker Desktop
+   2. In 'Containers/Apps' open the terminal of the db container
+   3. In the terminal of the db container execute "psql -h localhost -U <postgres_username>"
+      and then "update DATABASECHANGELOGLOCK set LOCKED=false, LOCKGRANTED=null, LOCKEDBY=null where ID=1;"
+   4. Close terminal and restart app
+6. If you see in the logs that hibernate_sequence does not exist open the terminal of
+   the db container again, sign in postgres and execute "CREATE SEQUENCE hibernate_sequence START 1;"
